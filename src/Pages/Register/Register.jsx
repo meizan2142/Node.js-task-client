@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form"
 import { NavLink, useLocation, useNavigate } from "react-router"
 import { useAuth } from "../../hooks/useAuth"
+import toast, { Toaster } from "react-hot-toast"
 
 const Register = () => {
     const { createUser } = useAuth()
@@ -18,33 +19,35 @@ const Register = () => {
         const userInfo = { email, password, username }
         console.log(userInfo);
         
-
         createUser(email, password)
         .then(res => {
             console.log(res.user);
+            alert('Registered Successfully');
             navigate(location?.state ? location?.state : '/login')
         })
         .catch(error => {
             console.log(error);
+            toast.error('This email already exists');
         })
-        //     .then(() => {
-        //         axios.post('https://full-stack-backend-liart.vercel.app/users', userInfo).then(res => {
-        //             if (res.data.insertedId) {
-        //                 Swal.fire({
-        //                     position: "top-center",
-        //                     icon: "success",
-        //                     title: "Registered and stored.",
-        //                     showConfirmButton: false,
-        //                     timer: 1500
-        //                 });
-        //                 navigate(location?.state ? location?.state : '/')
-        //             }
-        //         })
-        //     })
     }
+    //     .then(() => {
+    //         axios.post('https://full-stack-backend-liart.vercel.app/users', userInfo).then(res => {
+    //             if (res.data.insertedId) {
+    //                 Swal.fire({
+    //                     position: "top-center",
+    //                     icon: "success",
+    //                     title: "Registered and stored.",
+    //                     showConfirmButton: false,
+    //                     timer: 1500
+    //                 });
+    //                 navigate(location?.state ? location?.state : '/')
+    //             }
+    //         })
+    //     })
     return (
         <div className="mx-auto  my-56 w-full max-w-md space-y-8 rounded-lg border bg-white p-7 shadow-xl mobile:p-10  ">
             <h1 className="text-3xl font-semibold tracking-tight">SIGN UP</h1>
+            <Toaster />
             {/* Form starts from here */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-2 text-sm">
