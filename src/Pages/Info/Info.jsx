@@ -1,4 +1,19 @@
+import { useLocation, useNavigate } from "react-router";
+import auth from "../../firebaseConfig/firebaseConfig";
+import { useAuth } from "../../hooks/useAuth"
+
 const Info = () => {
+    const { logOut } = useAuth()
+    const navigate = useNavigate()
+    const location = useLocation()
+    const handleSignOut = async () => {
+        try {
+            await logOut(auth);
+            navigate(location?.state ? location?.state : '/login')
+        } catch (err) {
+            console.error('Error signing out:', err);
+        }
+    };
     return (
         <div className="flex my-56 justify-center">
             <div className="w-[350px] rounded-2xl bg-white p-6 shadow-lg dark:bg-[#18181B] md:p-8">
@@ -6,6 +21,7 @@ const Info = () => {
                     <h1 className="text-white font-bold text-3xl">Your Info</h1>
                     <h1 className="text-center font-medium text-slate-700 dark:text-white/80">Username: sabrina@21626</h1>
                     <h1 className="text-center font-medium text-slate-700 dark:text-white/80">Email: sabrina@gmail.com</h1>
+                    <button onClick={handleSignOut} className="rounded-lg bg-sky-500 px-4 py-2 text-xl text-white duration-300 active:scale-95">SignOut</button>
                 </div>
             </div>
         </div>
