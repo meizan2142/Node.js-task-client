@@ -20,18 +20,6 @@ const LogIn = () => {
             <h1 className="text-3xl font-semibold tracking-tight">SIGN IN</h1>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {/* <div className="space-y-2 text-sm">
-                    <label htmlFor="username" className="block text-black font-medium">
-                        UserName
-                    </label>
-                    <input
-                        className="flex h-10 w-full rounded-md border px-3 py-2 text-sm focus:ring-1 focus-visible:outline-none dark:border-zinc-700"
-                        id="uaername"
-                        placeholder="Username"
-                        type="text"
-                        {...register('username', { 'required': true })}
-                    />
-                </div> */}
                 <div className="space-y-2 text-sm">
                     <label htmlFor="username" className="block text-black font-medium">
                         Email
