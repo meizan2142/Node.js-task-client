@@ -107,6 +107,10 @@ const Register = () => {
                         {...register('password', { 'required': true })}
                     />
                 </div>
+                <div>
+                <label htmlFor="password">Upload Images:</label>
+                <input type="file" name="images" />
+                </div>
                 <button className="rounded-md bg-sky-500 px-4 py-2 text-white mx-40 transition-colors hover:bg-sky-600 dark:bg-sky-700">Submit</button>
             </form>
             <p className="text-center text-sm text-black">
