@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { createContext, useEffect, useState } from "react";
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import auth from "../firebaseConfig/firebaseConfig";
+import { auth } from "../firebaseConfig/firebaseConfig";
 // import { useLocation, useNavigate } from "react-router";
 
 // eslint-disable-next-line react-refresh/only-export-components

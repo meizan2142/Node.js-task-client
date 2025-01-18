@@ -2,49 +2,63 @@ import { useForm } from "react-hook-form"
 import { NavLink, useLocation, useNavigate } from "react-router"
 import { useAuth } from "../../hooks/useAuth"
 import toast, { Toaster } from "react-hot-toast"
+import { addDoc, collection } from "firebase/firestore"
+import { db } from "../../firebaseConfig/firebaseConfig"
 const Register = () => {
     const { createUser } = useAuth()
     const navigate = useNavigate()
     const location = useLocation()
+    const dbref = collection(db, 'Users')
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm()
-    const onSubmit = (data) => {
+    // Firebase collection name == Users
+    const onSubmit = async (data) => {
         const { email, username, password } = data;
         const userInfo = { email, username, password };
-        console.log('User Info:', userInfo);
 
-        createUser(data.email, data.password)
-            .then(() => {
-                fetch(`${import.meta.env.VITE_API_URL}/users`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(userInfo),
-                })
-                    .then(res => {
-                        if (!res.ok) {
-                            throw new Error(`HTTP error! status: ${res.status}`);
-                        }
-                        return res.json();
-                    })
-                    .then(data => {
-                        if (data.insertedId) {
-                            toast.success('Registered and Stored!');
-                            navigate(location?.state || '/login');
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error occurred during the fetch:", error);
-                        toast.error("Failed to register and store user.");
-                    });
+        try {
+            console.log("User Info:", userInfo);
 
-                console.log("User info:", userInfo);
+            // Step 1: Create user in Firebase Authentication
+            await createUser(email, password);
+
+            // Step 2: Save user details in Firestore (excluding password)
+            await addDoc(dbref, {
+                UserName: username,
+                Email: email,
+                Password: password, 
             });
+            console.log("User info saved in Firestore Database");
+
+            // Step 3: Save user details in your external backend (if needed)
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(userInfo), // Do not include the password in real-world applications
+            });
+
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            if (responseData.insertedId) {
+                toast.success("Registered and Stored!");
+                navigate(location?.state || "/login");
+            } else {
+                throw new Error("Failed to insert user data into the backend");
+            }
+        } catch (error) {
+            console.error("Error occurred during registration:", error);
+            toast.error("Failed to register and store user.");
+        }
     };
+
     return (
         <div className="mx-auto  my-56 w-full max-w-md space-y-8 rounded-lg border bg-white p-7 shadow-xl mobile:p-10  ">
             <h1 className="text-3xl font-semibold tracking-tight">SIGN UP</h1>
